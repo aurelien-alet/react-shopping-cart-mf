@@ -64,7 +64,7 @@ module.exports = {
       exposes: {
           './Cart': './src/components/Cart',
       },
-      shared: [{
+      shared: {
         ...packageJsonDeps,
         react: {
           singleton: true,
@@ -76,7 +76,7 @@ module.exports = {
           eager: true,
           requiredVersion: packageJsonDeps["react-dom"],
         },
-      }]
+      }
     }),
   ]
 };

@@ -5,8 +5,6 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpack = require("webpack");
 const packageJsonDeps = require("./package.json").dependencies;
 
-console.log(packageJsonDeps.react);
-
 module.exports = {
   entry: "./src/index",
   mode: "development",
