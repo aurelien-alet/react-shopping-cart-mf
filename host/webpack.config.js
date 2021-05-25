@@ -4,13 +4,14 @@ const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPl
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpack = require("webpack");
 const packageJsonDeps = require("./package.json").dependencies;
+const DashboardPlugin = require("@module-federation/dashboard-plugin")
 
 module.exports = {
   entry: "./src/index",
   mode: "development",
   devServer: {
     contentBase: path.join(__dirname, "dist"),
-    port: 3000,
+    port: 5000,
   },
   output: {
     publicPath: "auto",
@@ -61,8 +62,8 @@ module.exports = {
     new ModuleFederationPlugin({
       name: 'host',
       remotes: {
-        cart: 'cart@http://localhost:3001/remoteEntry.js',
-        product: 'product@http://localhost:3002/remoteEntry.js'
+        cart: 'cart@http://localhost:5001/remoteEntry.js',
+        product: 'product@http://localhost:5002/remoteEntry.js'
       },
       shared: {
         ...packageJsonDeps,
@@ -77,6 +78,9 @@ module.exports = {
           requiredVersion: packageJsonDeps["react-dom"],
         },
       }
+    }),
+    new DashboardPlugin({
+      dashboardUrl: "http://localhost:3000/api/update"
     })
   ]
 };

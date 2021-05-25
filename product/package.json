@@ -19,6 +19,7 @@
     "transform-runtime": "0.0.0"
   },
   "devDependencies": {
+    "@module-federation/dashboard-plugin": "^2.1.2",
     "autoprefixer": "^8.6.2",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
