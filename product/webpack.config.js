@@ -56,8 +56,11 @@ var clientConfig = {
       chunkFilename: "[id].[hash].css"
     }),
     new ModuleFederationPlugin({
-      name: "price",
+      name: "product",
       filename: "remoteEntry.js",
+      exposes: {
+        './Product': './src/components/Product',
+      },
       remotes: {
         price: 'price@http://localhost:4003/build/client/remoteEntryClient.js'
       },
@@ -74,7 +77,7 @@ var serverConfig = {
   output: {
     path: path.resolve(__dirname, "build/server"),
     filename: "server.js",
-    publicPath: "/",
+    publicPath: "auto",
     clean: true
   },
   module: {
@@ -95,9 +98,12 @@ var serverConfig = {
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: "price",
+      name: "product",
       library: { type: "commonjs-module" },
       filename: "remoteEntry.js",
+      exposes: {
+        './Product': './src/components/Product',
+      },
       remotes: {
         price: path.resolve(
           __dirname,

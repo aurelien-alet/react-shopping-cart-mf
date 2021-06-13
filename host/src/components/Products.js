@@ -3,7 +3,7 @@ import LoadingProducts from "../loaders/Products";
 import NoResults from "../empty-states/NoResults";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 
-const Product = React.lazy(() => import('product/Product'));
+import Product from 'product/Product';
 
 class Products extends Component {
   constructor() {
@@ -23,14 +23,13 @@ class Products extends Component {
       .filter(searchingFor(term))
       .map(product => {
         return (
-          <React.Suspense key={product.id} fallback={<p>Loading content from Product...</p>}>
-            <Product
-              price={product.price}
-              name={product.name}
-              image={product.image}
-              id={product.id}
-            ></Product>
-          </React.Suspense>
+          <Product
+            price={product.price}
+            name={product.name}
+            image={product.image}
+            id={product.id}
+            key={product.id}
+          ></Product>
         );
       });
 

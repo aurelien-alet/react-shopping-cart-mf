@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { findDOMNode } from "react-dom";
 
-const Cart = React.lazy(() => import('cart/Cart'));
+import Cart from 'cart/Cart';
 
 class Header extends Component {
   constructor(props) {
@@ -164,11 +164,9 @@ class Header extends Component {
                 className={"cart-preview active"}
                 ref="cartPreview"
               >
-                <React.Suspense fallback={<p>Loading content from Cart...</p>}>
-                  <Cart
-                    cartItems={this.props.cartItems}
-                  ></Cart>
-                </React.Suspense>
+                <Cart
+                  cartItems={this.props.cartItems}
+                ></Cart>
                 <div className="action-block">
                   <button
                     type="button"
