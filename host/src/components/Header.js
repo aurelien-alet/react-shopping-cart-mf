@@ -1,21 +1,26 @@
 import React, { Component } from "react";
 import { findDOMNode } from "react-dom";
 
-import Cart from 'cart/Cart';
+// import Cart from 'cart/Cart';
 
 class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      DynamicCart: null,
       showCart: false,
       cart: this.props.cartItems,
       mobileSearch: false
     };
   }
-  handleCart(e) {
+  handleCart = async (e) => {
     e.preventDefault();
     this.setState({
       showCart: !this.state.showCart
+    });
+    const Cart = await import('cart/Cart');
+    this.setState({
+      DynamicCart: Cart.default
     });
   }
   handleSubmit(e) {
@@ -66,7 +71,7 @@ class Header extends Component {
     );
   }
   render() {
-
+    const { DynamicCart } = this.state;
     return (
       <header>
         <div className="container">
@@ -164,9 +169,10 @@ class Header extends Component {
                 className={"cart-preview active"}
                 ref="cartPreview"
               >
-                <Cart
+                {/* <Cart
                   cartItems={this.props.cartItems}
-                ></Cart>
+                ></Cart> */}
+                { DynamicCart && <DynamicCart cartItems={this.props.cartItems}></DynamicCart> }
                 <div className="action-block">
                   <button
                     type="button"

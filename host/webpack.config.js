@@ -126,4 +126,3 @@ var serverConfig = {
 };
 
 module.exports = [clientConfig, serverConfig];
-// module.exports = [serverConfig];
