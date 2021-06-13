@@ -5,6 +5,7 @@ const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 
 const nodeExternals = require('webpack-node-externals');
+const packageJsonDeps = require("./package.json").dependencies;
 
 var clientConfig = {
   mode: "development",
@@ -57,14 +58,26 @@ var clientConfig = {
     }),
     new ModuleFederationPlugin({
       name: "product",
-      filename: "remoteEntry.js",
+      filename: "remoteEntryProduct.js",
       exposes: {
         './Product': './src/components/Product',
       },
       remotes: {
-        price: 'price@http://localhost:4003/build/client/remoteEntryClient.js'
+        price: 'price@http://localhost:5003/build/client/remoteEntryPrice.js'
       },
-      //shared: ["react", "react-dom"],
+      shared: {
+        ...packageJsonDeps,
+        react: {
+          singleton: true,
+          eager: true,
+          requiredVersion: packageJsonDeps.react,
+        },
+        "react-dom": {
+          singleton: true,
+          eager: true,
+          requiredVersion: packageJsonDeps["react-dom"],
+        },
+      }
     }),
     ],
 };
@@ -100,17 +113,29 @@ var serverConfig = {
     new ModuleFederationPlugin({
       name: "product",
       library: { type: "commonjs-module" },
-      filename: "remoteEntry.js",
+      filename: "remoteEntryProduct.js",
       exposes: {
         './Product': './src/components/Product',
       },
       remotes: {
         price: path.resolve(
           __dirname,
-          "../price/build/server/remoteEntry.js"
+          "../price/build/server/remoteEntryPrice.js"
         ),
       },
-      //shared: ["react", "react-dom"],
+      shared: {
+        ...packageJsonDeps,
+        react: {
+          singleton: true,
+          eager: true,
+          requiredVersion: packageJsonDeps.react,
+        },
+        "react-dom": {
+          singleton: true,
+          eager: true,
+          requiredVersion: packageJsonDeps["react-dom"],
+        },
+      }
     }),
   ],
 };

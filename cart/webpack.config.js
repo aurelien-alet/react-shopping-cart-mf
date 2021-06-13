@@ -5,6 +5,7 @@ const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 
 const nodeExternals = require('webpack-node-externals');
+const packageJsonDeps = require("./package.json").dependencies;
 
 var clientConfig = {
   mode: "development",
@@ -57,23 +58,23 @@ var clientConfig = {
     }),
     new ModuleFederationPlugin({
       name: 'cart',
-      filename: 'remoteEntry.js',
+      filename: 'remoteEntryCart.js',
       exposes: {
           './Cart': './src/components/Cart',
       },
-      // shared: {
-      //   ...packageJsonDeps,
-      //   react: {
-      //     singleton: true,
-      //     eager: true,
-      //     requiredVersion: packageJsonDeps.react,
-      //   },
-      //   "react-dom": {
-      //     singleton: true,
-      //     eager: true,
-      //     requiredVersion: packageJsonDeps["react-dom"],
-      //   },
-      // }
+      shared: {
+        ...packageJsonDeps,
+        react: {
+          singleton: true,
+          eager: true,
+          requiredVersion: packageJsonDeps.react,
+        },
+        "react-dom": {
+          singleton: true,
+          eager: true,
+          requiredVersion: packageJsonDeps["react-dom"],
+        },
+      }
     }),
   ]
 };
@@ -108,10 +109,23 @@ var serverConfig = {
   plugins: [
     new ModuleFederationPlugin({
       name: 'cart',
-      filename: 'remoteEntry.js',
+      filename: 'remoteEntryCart.js',
       library: { type: "commonjs-module" },
       exposes: {
           './Cart': './src/components/Cart',
+      },
+      shared: {
+        ...packageJsonDeps,
+        react: {
+          singleton: true,
+          eager: true,
+          requiredVersion: packageJsonDeps.react,
+        },
+        "react-dom": {
+          singleton: true,
+          eager: true,
+          requiredVersion: packageJsonDeps["react-dom"],
+        },
       }
     })
   ]

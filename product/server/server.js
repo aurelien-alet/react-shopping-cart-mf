@@ -9,8 +9,8 @@ const app = express();
 app.use('/build', express.static(path.resolve(__dirname, "..")));
 
 const done = () => {
-  app.listen(4002, () => {
-    console.log(`Server is listening on port: 4002`);
+  app.listen(5002, () => {
+    console.log(`Server is listening on port: 5002`);
   });
 };
 

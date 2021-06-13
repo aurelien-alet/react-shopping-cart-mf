@@ -5,6 +5,7 @@ const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 
 const nodeExternals = require('webpack-node-externals');
+const packageJsonDeps = require("./package.json").dependencies;
 
 var clientConfig = {
   mode: "development",
@@ -57,24 +58,24 @@ var clientConfig = {
     }),
     new ModuleFederationPlugin({
       name: 'host',
-      filename: 'remoteEntry.js',
+      filename: 'remoteEntryHost.js',
       remotes: {
-        product: 'product@http://localhost:4002/build/client/remoteEntry.js',
-        cart: 'cart@http://localhost:4001/build/client/remoteEntry.js'
+        product: 'product@http://localhost:5002/build/client/remoteEntryProduct.js',
+        cart: 'cart@http://localhost:5001/build/client/remoteEntryCart.js'
       },
-      // shared: {
-      //   ...packageJsonDeps,
-      //   react: {
-      //     singleton: true,
-      //     eager: true,
-      //     requiredVersion: packageJsonDeps.react,
-      //   },
-      //   "react-dom": {
-      //     singleton: true,
-      //     eager: true,
-      //     requiredVersion: packageJsonDeps["react-dom"],
-      //   },
-      // }
+      shared: {
+        ...packageJsonDeps,
+        react: {
+          singleton: true,
+          eager: true,
+          requiredVersion: packageJsonDeps.react,
+        },
+        "react-dom": {
+          singleton: true,
+          eager: true,
+          requiredVersion: packageJsonDeps["react-dom"],
+        },
+      }
     }),
   ]
 };
@@ -109,18 +110,31 @@ var serverConfig = {
   plugins: [
     new ModuleFederationPlugin({
       name: 'host',
-      filename: 'remoteEntry.js',
+      filename: 'remoteEntryHost.js',
       library: { type: "commonjs-module" },
       remotes: {
         product: path.resolve(
           __dirname,
-          "../product/build/server/remoteEntry.js"
+          "../product/build/server/remoteEntryProduct.js"
         ),
         cart: path.resolve(
           __dirname,
-          "../cart/build/server/remoteEntry.js"
+          "../cart/build/server/remoteEntryCart.js"
         ),
       },
+      shared: {
+        ...packageJsonDeps,
+        react: {
+          singleton: true,
+          eager: true,
+          requiredVersion: packageJsonDeps.react,
+        },
+        "react-dom": {
+          singleton: true,
+          eager: true,
+          requiredVersion: packageJsonDeps["react-dom"],
+        },
+      }
     })
   ]
 };
