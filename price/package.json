@@ -4,7 +4,8 @@
   "description": "Simple react shopping cart without using redux",
   "main": "main.js",
   "scripts": {
-    "start": "webpack-cli serve"
+    "start": "npm run build && node build/server/server.js",
+    "build": "webpack --config webpack.config.js"
   },
   "keywords": [
     "reactjs",
@@ -14,6 +15,7 @@
   "author": "Sivadass",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.17.1",
     "prop-types": "^15.5.10",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
@@ -40,6 +42,7 @@
     "url-loader": "^1.0.1",
     "webpack": "^5.35.1",
     "webpack-cli": "^4.6.0",
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^3.11.2",
+    "webpack-node-externals": "^3.0.0"
   }
 }

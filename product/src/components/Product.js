@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import QuickView from "./QuickView";
+
 import "../scss/style.scss";
 
-const Price = React.lazy(() => import('price/Price'));
+import Price from "price/Price";
 
 class Product extends Component {
   
@@ -114,12 +115,7 @@ class Product extends Component {
           />
         </div>
         <h4 className="product-name">{this.props.name}</h4>
-        <React.Suspense fallback={<p>Loading content from Price...</p>}>
-          <Price
-            price={price}
-            id={id}
-          ></Price>
-        </React.Suspense>
+        <Price price={price} id={id}></Price>
         <div className="product-action">
           <button
             className={!this.state.isAdded ? "" : "added"}

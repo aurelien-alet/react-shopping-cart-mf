@@ -10,3 +10,6 @@
 
 # Misc
 */.DS_Store
+
+# Builds
+*/build/

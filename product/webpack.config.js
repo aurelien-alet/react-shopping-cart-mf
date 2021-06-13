@@ -1,20 +1,20 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
+var path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const webpack = require("webpack");
-const packageJsonDeps = require("./package.json").dependencies;
-const DashboardPlugin = require("@module-federation/dashboard-plugin")
 
-module.exports = {
-  entry: "./src/index",
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
+
+const nodeExternals = require('webpack-node-externals');
+
+var clientConfig = {
   mode: "development",
-  devServer: {
-    contentBase: path.join(__dirname, "dist"),
-    port: 5002,
+  entry: {
+    index: './src/index.js',
   },
   output: {
-    publicPath: "auto",
+    path: path.resolve(__dirname, 'build/client'),
+    filename: "[name].js",
+    clean: true
   },
   module: {
     rules: [
@@ -51,39 +51,62 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: "./src/index.html",
-      filename: "index.html"
-    }),
     new MiniCssExtractPlugin({
       filename: "[name].[hash].css",
       chunkFilename: "[id].[hash].css"
     }),
     new ModuleFederationPlugin({
-      name: 'product',
-      filename: 'remoteEntry.js',
-      exposes: {
-          './Product': './src/components/Product',
-      },
+      name: "price",
+      filename: "remoteEntry.js",
       remotes: {
-        price: 'price@http://localhost:5003/remoteEntry.js'
+        price: 'price@http://localhost:4003/build/client/remoteEntryClient.js'
       },
-      shared: {
-        ...packageJsonDeps,
-        react: {
-          singleton: true,
-          eager: true,
-          requiredVersion: packageJsonDeps.react,
-        },
-        "react-dom": {
-          singleton: true,
-          eager: true,
-          requiredVersion: packageJsonDeps["react-dom"],
-        },
-      }
+      //shared: ["react", "react-dom"],
     }),
-    new DashboardPlugin({
-      dashboardUrl: "http://localhost:3000/api/update"
-    })
-  ]
+    ],
 };
+
+var serverConfig = {
+  mode: "development",
+  entry: ["babel-polyfill", path.resolve(__dirname, "server/server.js")],
+  target: "node",
+  externals: [nodeExternals()],
+  output: {
+    path: path.resolve(__dirname, "build/server"),
+    filename: "server.js",
+    publicPath: "/",
+    clean: true
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: 'babel-loader'
+      },
+      {
+        test: /\.(sa|sc|c)ss$/,
+        use: [
+          "css-loader",
+          "postcss-loader",
+          "sass-loader"
+        ]
+      },
+    ]
+  },
+  plugins: [
+    new ModuleFederationPlugin({
+      name: "price",
+      library: { type: "commonjs-module" },
+      filename: "remoteEntry.js",
+      remotes: {
+        price: path.resolve(
+          __dirname,
+          "../price/build/server/remoteEntry.js"
+        ),
+      },
+      //shared: ["react", "react-dom"],
+    }),
+  ],
+};
+
+module.exports = [clientConfig, serverConfig];
